@@ -160,6 +160,7 @@ class Pokemon:
 
         # Consider type advantages
         version = ['Fire', 'Water', 'Grass']
+
         for i,k in enumerate(version):
             if self.types == k:
                 # Both are same type
@@ -267,13 +268,12 @@ class Trainer:
         self.number = NumberOfPokemon
         self.pokemon = TeamPokemon
         self.selected = selectedPokemon
-
-
         self.action = action
+
     #Checking Trainer XP
     def checkXP(self):
-
         print("You currently have", self.xp%10, "XP")
+
     #Checking Trainer level
     def checkLevel(self):
 
@@ -284,24 +284,29 @@ class Trainer:
 
         print("Please select your starter Pokemon:")
         print("Type Charmander, Squirtle, or Bulbasaur to select your starter")
-        if input() == "Charmander":
+        starter = input()
+        if starter == "Charmander":
             self.pokemon.append(Charmander)
-        elif input() == "Squirtle":
+            listOfPokemon.remove(Charmander)
+        elif starter == "Squirtle":
             self.pokemon.append(Squirtle)
-        elif input() == "Bulbasaur":
+            listOfPokemon.remove(Squirtle)
+
+        elif starter == "Bulbasaur":
             self.pokemon.append(Bulbasaur)
+            listofPokemon.remove(Bulbasaur)
         self.number = len(self.pokemon)
 
     #Checking owned Pokemon
     def checkPokemon (self):
 
-        
         if self.number > 0:
             print("You currently have:")
             for i in range(len(self.pokemon)):
-                print(i+1, self.pokemon[i].name, "Level:", (int(self.pokemon[i].attack)+int(self.pokemon[i].defense))/2, "Attack:", self.pokemon[i].attack,"Defense:", self.pokemon[i].defense)
+                print(i+1, self.pokemon[i].name, "Level:", 3*(1+np.mean([self.pokemon[i].attack, self.pokemon[i].defense])), "Attack:", self.pokemon[i].attack,"Defense:", self.pokemon[i].defense)
         else:
             print("No Pokemon currently")
+
     #Choosing Pokemon to fight
     def selectPokemon(self):
 
@@ -316,6 +321,7 @@ class Trainer:
         randomPokemon = random.choice(listOfPokemon)
         x = randomPokemon.attack
         y = randomPokemon.defense
+        a, b = self.selected.attack, self.selected.defense
         if self.selected == "No Pokemon Selected":
             print("No Pokemon currently selected, please select a Pokemon before entering a fight.")
             exit
@@ -328,15 +334,17 @@ class Trainer:
             if self.level < 2:
                 randomPokemon.attack = 2
                 randomPokemon.defense = 2
+
             self.selected.capturefight(randomPokemon)
             if self.selected.status == "captured":
                 randomPokemon.attack = x
                 randomPokemon.defense = y
                 self.pokemon.append(randomPokemon)
+                listOfPokemon.remove(randomPokemon)
                 self.number = len(self.pokemon)
                 self.xp = self.xp+5
-                self.selected.attack = self.selected.attack + 1
-                self.selected.defense = self.selected.defense + 1
+                self.selected.attack = a + 1
+                self.selected.defense = b + 1
 
             elif self.selected.status == "won":
                 self.xp = self.xp+5
