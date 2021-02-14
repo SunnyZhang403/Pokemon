@@ -283,18 +283,27 @@ class Trainer:
     def chooseStarter (self):
 
         print("Please select your starter Pokemon:")
-        print("Type Charmander, Squirtle, or Bulbasaur to select your starter")
+        print("Type Charmander, Squirtle, Bulbasaur, Treecko, Torchic, or Mudkip to select your starter")
         starter = input()
         if starter == "Charmander":
             self.pokemon.append(Charmander)
-            listOfPokemon.remove(Charmander)
+
         elif starter == "Squirtle":
             self.pokemon.append(Squirtle)
-            listOfPokemon.remove(Squirtle)
+
 
         elif starter == "Bulbasaur":
             self.pokemon.append(Bulbasaur)
-            listofPokemon.remove(Bulbasaur)
+
+        elif starter == "Treecko":
+            self.pokemon.append(Treecko)
+
+        elif starter == "Torchic":
+            self.pokemon.append(Torchic)
+
+        elif starter == "Mudkip":
+            self.pokemon.append(Mudkip)
+
         self.number = len(self.pokemon)
 
     #Checking owned Pokemon
@@ -405,16 +414,19 @@ if __name__ == '__main__':
     Wartortle = Pokemon('Wartortle', 'Water', ['Bubblebeam', 'Water Gun', 'Headbutt', 'Surf'],{'ATTACK': 5, 'DEFENSE':5}, "none")
     Ivysaur = Pokemon('Ivysaurt', 'Grass', ['Vine Wip', 'Razor Leaf', 'Bullet Seed', 'Leech Seed'],{'ATTACK':4, 'DEFENSE':6}, "none")
 
+    Treecko = Pokemon('Treecko', 'Grass', ['Leer', 'Pound', 'Leafage', 'Quick Attack'],{'ATTACK':3, 'DEFENSE':4}, "none")
+    Torchic = Pokemon('Torchic', 'Fire', ['Growl', 'Scratch', 'Ember', 'Quick Attack'],{'ATTACK': 3, 'DEFENSE':3}, "none")
+    Mudkip = Pokemon('Mudkip', 'Water', ['Growl', 'Tackle', 'Water Gun', 'Rock Smash'],{'ATTACK':4, 'DEFENSE':2}, "none")
 
 
 
-
-listOfPokemon = [Charizard, Blastoise, Venusaur, Charmander, Squirtle, Bulbasaur, Charmeleon, Wartortle, Ivysaur]
+listOfPokemon = [Charizard, Blastoise, Venusaur, Charmander, Squirtle, Bulbasaur, Charmeleon, Wartortle, Ivysaur, Treecko, Torchic, Mudkip]
 
 
 Player1 = Trainer(input("Welcome to Pokemon! What's your name? "), 0, 0, 0, [], "No Pokemon Selected", "none")
 print("Hello", Player1.name + "!")
 Player1.chooseStarter()
+listOfPokemon.remove(Player1.pokemon[0])
 while True:
     action = input("What would you like to do? Check your experience (xp), check your level (level),\ncheck your Pokemon (pokemon), select your Pokemon (select), heal your Pokemon(heal), or try to capture\na Pokemon (capture). Type 'exit'to exit ")
 
