@@ -232,7 +232,7 @@ class Pokemon:
             print(f"Go {Pokemon2.name}!")
             for i, x in enumerate(Pokemon2.moves):
                 print(f"{i+1}.", x)
-            index = int(input('Pick a move: '))
+            index = random.randint(1,4)
             delay_print(f"\n{Pokemon2.name} used {Pokemon2.moves[index-1]}!")
             time.sleep(1)
             delay_print(string_2_attack)
@@ -258,25 +258,7 @@ class Pokemon:
                 break
 
 
-if __name__ == '__main__':
-    #Create Pokemon
-    Charizard = Pokemon('Charizard', 'Fire', ['Flamethrower', 'Fly', 'Blast Burn', 'Fire Punch'], {'ATTACK':12, 'DEFENSE': 8},"none")
-    Blastoise = Pokemon('Blastoise', 'Water', ['Water Gun', 'Bubblebeam', 'Hydro Pump', 'Surf'],{'ATTACK': 10, 'DEFENSE':10}, "none")
-    Venusaur = Pokemon('Venusaur', 'Grass', ['Vine Wip', 'Razor Leaf', 'Earthquake', 'Frenzy Plant'],{'ATTACK':8, 'DEFENSE':12}, "none")
 
-    Charmander = Pokemon('Charmander', 'Fire', ['Ember', 'Scratch', 'Tackle', 'Fire Punch'],{'ATTACK':100, 'DEFENSE':200}, "none")
-    Squirtle = Pokemon('Squirtle', 'Water', ['Bubblebeam', 'Tackle', 'Headbutt', 'Surf'],{'ATTACK': 3, 'DEFENSE':3}, "none")
-    Bulbasaur = Pokemon('Bulbasaur', 'Grass', ['Vine Wip', 'Razor Leaf', 'Tackle', 'Leech Seed'],{'ATTACK':2, 'DEFENSE':4}, "none")
-
-    Charmeleon = Pokemon('Charmeleon', 'Fire', ['Ember', 'Scratch', 'Flamethrower', 'Fire Punch'],{'ATTACK':6, 'DEFENSE':5},"none")
-    Wartortle = Pokemon('Wartortle', 'Water', ['Bubblebeam', 'Water Gun', 'Headbutt', 'Surf'],{'ATTACK': 5, 'DEFENSE':5}, "none")
-    Ivysaur = Pokemon('Ivysaurt', 'Grass', ['Vine Wip', 'Razor Leaf', 'Bullet Seed', 'Leech Seed'],{'ATTACK':4, 'DEFENSE':6}, "none")
-
-
-
-
-
-listOfPokemon = [Charizard, Blastoise, Venusaur, Charmander, Squirtle, Bulbasaur, Charmeleon, Wartortle, Ivysaur]
 class Trainer:
     def __init__ (self, name,XP,level, NumberOfPokemon, TeamPokemon, selectedPokemon, action):
         self.name = name
@@ -285,18 +267,19 @@ class Trainer:
         self.number = NumberOfPokemon
         self.pokemon = TeamPokemon
         self.selected = selectedPokemon
-        self.xp = self.xp%10
-        self.level = math.floor(self.xp/10)
+
+
         self.action = action
+    #Checking Trainer XP
     def checkXP(self):
 
-        print("You currently have", self.xp, "XP")
-
+        print("You currently have", self.xp%10, "XP")
+    #Checking Trainer level
     def checkLevel(self):
 
-        print("You are level", self.level)
+        print("You are level", math.floor(self.xp/10))
 
-    
+    #Choosing Starter Pokemon
     def chooseStarter (self):
 
         print("Please select your starter Pokemon:")
@@ -309,16 +292,17 @@ class Trainer:
             self.pokemon.append(Bulbasaur)
         self.number = len(self.pokemon)
 
-    
+    #Checking owned Pokemon
     def checkPokemon (self):
 
         
         if self.number > 0:
             print("You currently have:")
             for i in range(len(self.pokemon)):
-                print(i+1, self.pokemon[i].name)
+                print(i+1, self.pokemon[i].name, "Level:", (int(self.pokemon[i].attack)+int(self.pokemon[i].defense))/2, "Attack:", self.pokemon[i].attack,"Defense:", self.pokemon[i].defense)
         else:
             print("No Pokemon currently")
+    #Choosing Pokemon to fight
     def selectPokemon(self):
 
         print("Please select your pokemon. You currently have", len(self.pokemon), "pokemon. Type a number between 1 and", len(self.pokemon), "to select.")
@@ -326,31 +310,48 @@ class Trainer:
         print("You have selected", self.selected.name)
  
         
-        
+    #Capturing pokemon
     def catchPokemon (self):
 
         randomPokemon = random.choice(listOfPokemon)
+        x = randomPokemon.attack
+        y = randomPokemon.defense
         if self.selected == "No Pokemon Selected":
             print("No Pokemon currently selected, please select a Pokemon before entering a fight.")
             exit
         elif self.selected != "No Pokemon Selected":
-            print("You encountered a wild", randomPokemon.name, ", would you like to try to capture it? (type yes or no)")
+            print("You encountered a wild", randomPokemon.name)
+            print("Would you like to try to capture it? (typ yes or no)")
+
         response = input()
         if response == "yes" and self.selected != "No Pokemon Selected":
+            if self.level < 2:
+                randomPokemon.attack = 2
+                randomPokemon.defense = 2
             self.selected.capturefight(randomPokemon)
             if self.selected.status == "captured":
+                randomPokemon.attack = x
+                randomPokemon.defense = y
                 self.pokemon.append(randomPokemon)
                 self.number = len(self.pokemon)
                 self.xp = self.xp+5
+                self.selected.attack = self.selected.attack + 1
+                self.selected.defense = self.selected.defense + 1
+
             elif self.selected.status == "won":
                 self.xp = self.xp+5
 
 
+    #Removing Pokemon
 
     def removePokemon(self):
 
         remove = input("Which Pokemon would you like to remove?")
         self.pokemon.remove(remove)
+    def healPokemon (self):
+        for i in range (len(self.pokemon)):
+            self.pokemon[i].health = '==================='
+            self.pokemon[i].bars = 20
 
 
     
@@ -358,7 +359,6 @@ class Trainer:
     
             
 def selectAction(Player):
-    action = input("What would you like to do? Check your experience (xp), check your level (level), check your Pokemon (pokemon), select your Pokemon (select), or try to capture a Pokemon (capture). Type 'exit'to exit")
     if action == "xp":
         Player.checkXP()
     if action == "level":
@@ -369,6 +369,8 @@ def selectAction(Player):
         Player.selectPokemon()
     if action == "capture":
         Player.catchPokemon()
+    if action == "heal":
+        Player.healPokemon()
     if action == "exit":
         print("Exiting now! See you next time!")
         exit()
@@ -381,11 +383,31 @@ def selectAction(Player):
 
     
 
+if __name__ == '__main__':
+    #Create Pokemon
+    Charizard = Pokemon('Charizard', 'Fire', ['Flamethrower', 'Fly', 'Blast Burn', 'Fire Punch'], {'ATTACK':12, 'DEFENSE': 8},"none")
+    Blastoise = Pokemon('Blastoise', 'Water', ['Water Gun', 'Bubblebeam', 'Hydro Pump', 'Surf'],{'ATTACK': 10, 'DEFENSE':10}, "none")
+    Venusaur = Pokemon('Venusaur', 'Grass', ['Vine Wip', 'Razor Leaf', 'Earthquake', 'Frenzy Plant'],{'ATTACK':8, 'DEFENSE':12}, "none")
 
+    Charmander = Pokemon('Charmander', 'Fire', ['Ember', 'Scratch', 'Tackle', 'Fire Punch'],{'ATTACK':3, 'DEFENSE':4}, "none")
+    Squirtle = Pokemon('Squirtle', 'Water', ['Bubblebeam', 'Tackle', 'Headbutt', 'Surf'],{'ATTACK': 3, 'DEFENSE':3}, "none")
+    Bulbasaur = Pokemon('Bulbasaur', 'Grass', ['Vine Wip', 'Razor Leaf', 'Tackle', 'Leech Seed'],{'ATTACK':2, 'DEFENSE':4}, "none")
+
+    Charmeleon = Pokemon('Charmeleon', 'Fire', ['Ember', 'Scratch', 'Flamethrower', 'Fire Punch'],{'ATTACK':6, 'DEFENSE':5},"none")
+    Wartortle = Pokemon('Wartortle', 'Water', ['Bubblebeam', 'Water Gun', 'Headbutt', 'Surf'],{'ATTACK': 5, 'DEFENSE':5}, "none")
+    Ivysaur = Pokemon('Ivysaurt', 'Grass', ['Vine Wip', 'Razor Leaf', 'Bullet Seed', 'Leech Seed'],{'ATTACK':4, 'DEFENSE':6}, "none")
+
+
+
+
+
+listOfPokemon = [Charizard, Blastoise, Venusaur, Charmander, Squirtle, Bulbasaur, Charmeleon, Wartortle, Ivysaur]
 
 
 Player1 = Trainer(input("Welcome to Pokemon! What's your name? "), 0, 0, 0, [], "No Pokemon Selected", "none")
 print("Hello", Player1.name + "!")
 Player1.chooseStarter()
 while True:
+    action = input("What would you like to do? Check your experience (xp), check your level (level),\ncheck your Pokemon (pokemon), select your Pokemon (select), heal your Pokemon(heal), or try to capture\na Pokemon (capture). Type 'exit'to exit ")
+
     selectAction(Player1)
